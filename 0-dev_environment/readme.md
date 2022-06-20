@@ -42,7 +42,7 @@ If you don't have an Azure subscription, create a [free account](https://azure
   * Azure Functions extension
   * Azure API Management extension
 * Azure CLI [Download](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli)
-* Azure Functions Core Tools 4 for Windows [Download](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local)
+* Azure Functions Core Tools 3/4 for Windows [Download](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local)
 * .NET 3.1 for Windows [Download](https://dotnet.microsoft.com/download/dotnet/3.1)
 * .NET 6.0 for Windows [Download](https://dotnet.microsoft.com/download/dotnet/6.0)
 
