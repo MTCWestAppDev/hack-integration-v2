@@ -27,21 +27,21 @@ API Management helps organizations publish APIs to external, partner, and intern
 
 1. Create Product suites
 
-    Create 3 suites of APIs. One for each of the use cases: Mobile Application, Internal business users and External Partners. The team will need to configure the products so that only the required operations are exposed to the different product suites. Those requirements are as follows:
+    Create 3 suites of APIs. One for each of the use cases. The team will need to configure the products so that only the required operations are exposed to the different product suites. Those requirements are as follows:
 
-    A. **Suite 1**: Requires access to all of the APIs. Each of them is required for different areas of the application's UX.  The operations that need to be configured for this product suite are as follows:
+    A. **Suite 1**: Requires access to all of the APIs.
 
     * GetUser
     * GetUsers
     * GetProgram
     * GetPrograms
 
-    B. **Suite 2**: Use the APIs for reporting purposes.  Need access to the program and feedback information but shouldn't be using the user operation or be able to create feedback.  The operations that should be exposed to this product suite are as follows:
+    B. **Suite 2**: Use the APIs for program reporting purposes. The operations that should be exposed to this product suite are as follows:
 
     * GetProgram
     * GetPrograms
 
-    C. **Suite 3**: The External Partners use case is to be able to see programs that that are offered and should only have the program operations exposed to them.  This product suite should only have the following operations exposed to them:
+    C. **Suite 3**: TUse the APIs for user reporting purposes.  This product suite should only have the following operations exposed to them:
 
     * GetUser
     * GetUsers
