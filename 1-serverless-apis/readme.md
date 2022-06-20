@@ -2,23 +2,31 @@
 
 Integration basics with Logic Apps and Functions.
 
+## Azure Logic Apps
+
 When you build workflows using Azure Logic Apps, you can use connectors to help you quickly and easily access data, events, and resources in other apps, services, systems, protocols, and platforms - often without writing any code.  A connector provides prebuilt operations that you can use as steps in your workflows.  Azure Logic Apps provide hundreds of connectors that you can use.  If no connector is available for the resource that you want to access, you can use the generic HTTP operation to communicate with the service, or you can create a custom connector.
+
+## Azure Functions
+
+This service provides a simplified way to write and run pieces of code or functions in the cloud. You can write only the code you need for the current problem, without setting up a complete app or the required infrastructure, which makes development faster and more productive. Use your chosen development language, such as C#, Java, JavaScript, PowerShell, Python, and TypeScript. You're billed only for the duration when your code runs, and Azure scales as necessary.
 
 ## Challenge 1
 
 1. Create an HTTP triggered Function with the following configuration:
 
-    * **Verb**: GET
+    * **Verb**: POST
 
-    * **Input**: The `programId` parameter value as a query parameter or an HTTP route
+    * **Input**: The `message` parameter value as a query parameter or in the request body
 
     * **Result**: "The program name for your program id {the id passed into the function} is Program A"
 
     > Note, parameter names are case sensitive.
 
-2. Verify the Function is working correctly, then deploy to Azure.
+1. Verify the Function is working correctly, then deploy to Azure.
 
-3. Create an HTTP triggered Logic App (When a HTTP request is received) with the following configuration:
+## Challenge 2
+
+1. Create an HTTP triggered Logic App (When a HTTP request is received) with the following configuration:
 
     * **Verb**: POST
 
@@ -26,15 +34,15 @@ When you build workflows using Azure Logic Apps, you can use connectors to help 
 
         ```JSON
         {
-            "programId": "d9fcabea-7f10-4fb1-81dd-47c5f467a05b"
+            "message": "test message"
         }
         ```
 
-3. Add an action to the Logic App action to call the Azure Function, passing the example payload to the `programId` parameter. The response should include the program Id, program name, and program description.
+## Challenge 3
 
-# Reference
+1. Add an action to the Logic App action to call the Azure Function, passing the example payload to the `message` parameter. The response should include the message.
 
-## Azure Functions
+## Azure Functions Reference
 
 * [Introduction to Azure Functions](https://docs.microsoft.com/azure/azure-functions/functions-overview)
 
@@ -50,7 +58,7 @@ When you build workflows using Azure Logic Apps, you can use connectors to help 
 
 * [Strategies for testing JavaScript in VS Code](https://docs.microsoft.com/en-us/azure/azure-functions/functions-test-a-function#javascript-in-vs-code)
 
-### Local Development with Visual Studio and C#
+### Local Development with Visual Studio
 
 * [QuickStart: Create your first C# function in Azure using Visual Studio](https://docs.microsoft.com/en-us/azure/azure-functions/functions-create-your-first-function-visual-studio)
 
@@ -74,16 +82,31 @@ When you build workflows using Azure Logic Apps, you can use connectors to help 
 
 ## Example Code
 
+### Query the Local Function from PowerShell
+
+Verify the local port number is correct
+
+```PowerShell
+$message = "test message query $(Get-Date)"
+$uri = 'http://localhost:7273/api/GetMessageQuery'+"?message=$message"
+Invoke-WebRequest -Uri $uri -Method POST
+
+$uri = 'http://localhost:7273/api/GetMessageBody'
+$message = "test message body $(Get-Date)"
+$body = @{"message" = $message} | ConvertTo-Json
+Invoke-WebRequest -Uri $uri -Method POST -Body $body
+```
+
 ### JavaScript Function
 
 ```JavaScript
 module.exports = async function (context, req) {
     context.log('JavaScript HTTP trigger function processed a request.');
 
-    const programId = (req.query.programId || (req.body && req.body.programId));
-    const responseMessage = programId
-        ? "The program name for your program id {" + programId + "} is Program A."
-        : "Please provide a programId on the query string!";
+    const message = (req.query.message || (req.body && req.body.message));
+    const responseMessage = message
+        ? "The program name for your program id {" + message + "} is Program A."
+        : "Please provide a message on the query string!";
 
     context.res = {
         // status: 200, /* Defaults to 200 */
@@ -95,25 +118,24 @@ module.exports = async function (context, req) {
 ### C# Function with Request Body
 
 ```CSharp
-public static class GetProgramBody {
-    [FunctionName("GetProgramBody")]
+public static class GetMessageBody {
+    [FunctionName("GetMessageBody")]
     public static async Task<IActionResult> Run(
-        [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
         ILogger log) {
         log.LogInformation("C# HTTP trigger function processed a request.");
 
         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
         dynamic data = JsonConvert.DeserializeObject(requestBody);
-        string programId = data?.programId;
-        log.LogInformation("programId value: " + programId);
+        string message = data?.message;
+        log.LogInformation("message value: " + message);
 
-        string responseMessage = string.IsNullOrEmpty(programId)
-            ? "This HTTP triggered function executed successfully. Pass a programId in message body!"
-            : $"The program, {programId} is program A.";
+        string responseMessage = string.IsNullOrEmpty(message)
+            ? "This HTTP triggered function executed successfully. Pass a message in message body!"
+            : $"The message, {message}.";
         log.LogInformation("responseMessage: " + responseMessage);
 
         return new OkObjectResult(responseMessage);
-
     }
 }
 ```
@@ -121,24 +143,24 @@ public static class GetProgramBody {
 ### C# Function with Query Parameter
 
 ```CSharp
-public static class GetProgramQuery {
-    [FunctionName("GetProgramQuery")]
+public static class GetMessageQuery {
+    [FunctionName("GetMessageQuery")]
     public static async Task<IActionResult> Run(
-        [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
         ILogger log) {
         log.LogInformation("C# HTTP trigger function processed a request.");
 
-        string programId = req.Query["programId"];
-        log.LogInformation("programId query: " + programId);
+        string message = req.Query["message"];
+        log.LogInformation("message query: " + message);
 
         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
         dynamic data = JsonConvert.DeserializeObject(requestBody);
-        programId = programId ?? data?.programId;
-        log.LogInformation("programId value: " + programId);
+        message = message ?? data?.message;
+        log.LogInformation("message value: " + message);
 
-        string responseMessage = string.IsNullOrEmpty(programId)
-            ? "This HTTP triggered function executed successfully. Pass a programId in the query string!"
-            : $"The program, {programId} is program A.";
+        string responseMessage = string.IsNullOrEmpty(message)
+            ? "This HTTP triggered function executed successfully. Pass a message in the query string!"
+            : $"The message, {message}.";
         log.LogInformation("responseMessage: " + responseMessage);
 
         return new OkObjectResult(responseMessage);
@@ -153,14 +175,14 @@ public static class GetProgramQuery {
     "definition": {
         "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
         "actions": {
-            "GetProgramQuery": {
+            "GetMessageQuery": {
                 "inputs": {
                     "function": {
-                        "id": "/subscriptions/0aef800c-dacc-40c8-aad0-47207100f1da/resourceGroups/hack-usw3-api/providers/Microsoft.Web/sites/hack-feedback-api/functions/GetProgramQuery"
+                        "id": "/subscriptions/0aef800c-dacc-40c8-aad0-47207100f1da/resourceGroups/hack-usw3-api/providers/Microsoft.Web/sites/hack-feedback-api/functions/GetMessageQuery"
                     },
                     "method": "POST",
                     "queries": {
-                        "programId": "@triggerBody()?['programId']"
+                        "message": "@triggerBody()?['message']"
                     }
                 },
                 "runAfter": {},
@@ -168,12 +190,12 @@ public static class GetProgramQuery {
             },
             "Response": {
                 "inputs": {
-                    "body": "@body('GetProgramQuery')",
+                    "body": "@body('GetMessageQuery')",
                     "statusCode": 200
                 },
                 "kind": "Http",
                 "runAfter": {
-                    "GetProgramQuery": [
+                    "GetMessageQuery": [
                         "Succeeded"
                     ]
                 },
@@ -189,7 +211,7 @@ public static class GetProgramQuery {
                     "method": "POST",
                     "schema": {
                         "properties": {
-                            "programId": {
+                            "message": {
                                 "type": "string"
                             }
                         },
@@ -212,13 +234,13 @@ public static class GetProgramQuery {
     "definition": {
         "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
         "actions": {
-            "GetProgramBody": {
+            "GetMessageBody": {
                 "inputs": {
                     "body": {
-                        "programId": "@triggerBody()?['programId']"
+                        "message": "@triggerBody()?['message']"
                     },
                     "function": {
-                        "id": "/subscriptions/0aef800c-dacc-40c8-aad0-47207100f1da/resourceGroups/hack-usw3-api/providers/Microsoft.Web/sites/hack-feedback-api/functions/GetProgramBody"
+                        "id": "/subscriptions/0aef800c-dacc-40c8-aad0-47207100f1da/resourceGroups/hack-usw3-api/providers/Microsoft.Web/sites/hack-feedback-api/functions/GetMessageBody"
                     },
                     "method": "POST"
                 },
@@ -227,12 +249,12 @@ public static class GetProgramQuery {
             },
             "Response": {
                 "inputs": {
-                    "body": "@body('GetProgramBody')",
+                    "body": "@body('GetMessageBody')",
                     "statusCode": 200
                 },
                 "kind": "Http",
                 "runAfter": {
-                    "GetProgramBody": [
+                    "GetMessageBody": [
                         "Succeeded"
                     ]
                 },
@@ -248,7 +270,7 @@ public static class GetProgramQuery {
                     "method": "POST",
                     "schema": {
                         "properties": {
-                            "programId": {
+                            "message": {
                                 "type": "integer"
                             }
                         },
