@@ -51,7 +51,11 @@ This challenge involves creating a Service Bus namespace and queue, configuring 
 
 1. Create Service Bus Topic and Subscription
 
+    [Create Service Bus Topic and Subscription](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-tutorial-topics-subscriptions-cli)
+
 1. Publish and Subscribe for Messages
+
+    [Service Bus to Logic Apps](https://docs.microsoft.com/en-us/azure/service-bus-messaging/service-bus-to-event-grid-integration-example)
 
 ## References
 
