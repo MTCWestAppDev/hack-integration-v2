@@ -17,10 +17,10 @@ AZ_SERVICEBUS_QUEUE='sbq-test'
 AZ_SERVICEBUS_TOPIC='sbt-test'
 AZ_SERVICEBUS_SUB1='sbt-testsub1'
 AZ_SERVICEBUS_SUB1_FILTER='sbt-testsub1-filter'
-AZ_SERVICEBUS_SUB1_QUERY="StoreId IN ('Store1','Store2','Store3')"
+AZ_SERVICEBUS_SUB1_QUERY="storeId IN ('store1','store2','store3')"
 AZ_SERVICEBUS_SUB2='sbt-testsub2'
 AZ_SERVICEBUS_SUB2_FILTER='sbt-testsub2-filter'
-AZ_SERVICEBUS_SUB2_QUERY="StoreId NOT IN ('Store1','Store2','Store3')"
+AZ_SERVICEBUS_SUB2_QUERY="storeId NOT IN ('store1','store2','store3')"
 
 # create resource group
 az group create --name $AZ_SERVICEBUS_RG --location $AZ_SERVICEBUS_LOCATION
