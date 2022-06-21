@@ -43,10 +43,6 @@ This challenge involves creating a Service Bus namespace and queue, configuring 
 
     [Use Azure Functions to send a Service Bus Queue Message](https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-service-bus-output)
 
-1. Receive messages to the Queue
-
-    [Use Azure Functions to receive a Service Bus Queue Message](https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-service-bus-output)
-
 ## Challenge 2
 
 1. Create Service Bus Topic and Subscription
